@@ -26,7 +26,8 @@ export function createPushService(db,dataDir,origin,{transport=webpush}={}){
   if(current&&current.doctor_id!==user.id)throw new Error('Sign out of the previous clinician account on this device first');
   const count=db.prepare('SELECT COUNT(*) n FROM push_subscriptions WHERE doctor_id=?').get(user.id).n;
   if(!current&&count>=10)throw new Error('Maximum 10 notification devices per clinician');
-  db.prepare(`INSERT INTO push_subscriptions VALUES(?,?,?,?,?,?,?) ON CONFLICT(endpoint) DO UPDATE SET subscription=excluded.subscription,origin=excluded.origin,session_token=excluded.session_token,language=excluded.language`).run(subscription.endpoint,user.id,JSON.stringify(subscription),origin(),token(req),language==='en'?'en':'ru',new Date().toISOString());
+  const locale=['ru','en','kk'].includes(language)?language:'ru';
+  db.prepare(`INSERT INTO push_subscriptions VALUES(?,?,?,?,?,?,?) ON CONFLICT(endpoint) DO UPDATE SET subscription=excluded.subscription,origin=excluded.origin,session_token=excluded.session_token,language=excluded.language`).run(subscription.endpoint,user.id,JSON.stringify(subscription),origin(),token(req),locale,new Date().toISOString());
  }
  const remove=(doctorId,endpoint)=>db.prepare('DELETE FROM push_subscriptions WHERE doctor_id=? AND endpoint=?').run(doctorId,endpoint);
  const logout=(user,req)=>db.prepare('DELETE FROM push_subscriptions WHERE doctor_id=? AND session_token=?').run(user.id,token(req));
@@ -44,6 +45,17 @@ export function createPushService(db,dataDir,origin,{transport=webpush}={}){
   return {devices:devices.length,accepted:results.filter(Boolean).length,...(errors.length?{errors}:{})};
  }
  return {publicKey:keys.publicKey,save,remove,logout,deliver,
-  notifyReading(patient,reading){return deliver(patient.doctor_id,language=>({title:language==='en'?'MedSense · New reading':'MedSense · Новое измерение',body:language==='en'?`${patient.name} added a reading: BP ${reading.systolic}/${reading.diastolic} mmHg, pulse ${reading.pulse} bpm.`:`${patient.name} загрузил(а) данные: АД ${reading.systolic}/${reading.diastolic} мм рт. ст., пульс ${reading.pulse} уд/мин.`,patientId:patient.id,tag:`reading-${patient.id}-${reading.id}`}));}
+  notifyReading(patient,reading){
+   const bp=`${reading.systolic}/${reading.diastolic}`;
+   const copy={
+    en:{title:'New reading',body:`${patient.name} added a reading: BP ${bp} mmHg, pulse ${reading.pulse} bpm.`},
+    ru:{title:'Новое измерение',body:`${patient.name} загрузил(а) данные: АД ${bp} мм рт. ст., пульс ${reading.pulse} уд/мин.`},
+    kk:{title:'Жаңа өлшем',body:`${patient.name} жаңа өлшем қосты: қан қысымы ${bp} мм сын. бағ., тамыр соғысы ${reading.pulse} соғу/мин.`}
+   };
+   return deliver(patient.doctor_id,language=>{
+    const {title,body}=copy[language]||copy.ru;
+    return {title:`MedSense · ${title}`,body,patientId:patient.id,tag:`reading-${patient.id}-${reading.id}`};
+   });
+  }
  };
 }

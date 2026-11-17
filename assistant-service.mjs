@@ -32,15 +32,31 @@ const words={
  doctor:'Ask your clinician about your target range and measurement schedule, when readings or symptoms require contact, and whether your cuff fits. Bring your reading history and medication list. Uploading data does not mean a clinician will see it immediately.',
  summary:'The average is a simple arithmetic summary of saved readings in the last 14 days. Irregular sampling can bias it; this is not a diagnosis or evidence that your condition improved or deteriorated.',
  fallback:'This version supports preset topics only: latest readings, 14-day summary, measurement technique and questions for your clinician. Select a topic below. It does not provide open-ended medical chat.',
- medication:'I cannot choose medicines or recommend dose changes. Discuss treatment with your clinician; seek emergency help for warning symptoms.'}
+ medication:'I cannot choose medicines or recommend dose changes. Discuss treatment with your clinician; seek emergency help for warning symptoms.'},
+ kk:{
+ boundary:'Ересектерге арналған оқу анықтамасы. Диагноз қоймайды және ем тағайындамайды. Көмекшінің жауабына сүйеніп дәрі мөлшерін өзгертпеңіз және қабылдауды тоқтатпаңыз. Дәрігердің жоспарын басшылыққа алыңыз.',
+ emergency:'Кеуде ауырса, қатты ентіксеңіз, кенеттен әлсіздік немесе ұю пайда болса, сөйлеу немесе көру бұзылса, Қазақстанда 103 немесе 112 нөміріне қоңырау шалыңыз. Қолданба жауабын немесе қайта өлшеуді күтпеңіз.',
+ severe:'Соңғы сақталған өлшемде систолалық қысым кемінде 180 немесе диастолалық қысым кемінде 120 мм сын. бағ. болды. Өлшем жаңа болса және қауіпті белгілер болмаса, кемінде 1 минуттан кейін қайта өлшеңіз. Мән осылай жоғары қалса, дереу медицина маманына хабарласыңыз. Қауіпті белгілер болса, күтпей 103 немесе 112 нөміріне қоңырау шалыңыз.',
+ limited:'Бұл жалпы ережелер жүкті, босанғаннан кейінгі кезеңдегі немесе 18 жасқа толмаған адамдарға қолданылмайды. Жеке бағалау үшін емдеуші дәрігеріңізге хабарласыңыз. Жағдай кенет нашарласа, шұғыл көмекке жүгініңіз.',
+ empty:'Сақталған өлшем жоқ. Тонометр көрсеткішін қосыңыз. Көмекші дерексіз қан қысымын бағалай алмайды.',
+ stale:'Соңғы өлшемге 24 сағаттан асқан. Ол қазіргі күйіңізді көрсетпейді. Қажет болса, дәрігердің жоспарына сай қайта өлшеңіз.',
+ high:'Систолалық қысым 140-қа немесе диастолалық қысым 90-ға жетсе не одан жоғары болса, әсіресе бұл қайталанса, дәрігермен талқылаңыз. Бір өлшем диагноз қоюға жеткіліксіз. Кейінгі өлшемдерді сақтап, тарихын дәрігерге көрсетіңіз.',
+ low:'Систолалық қысым 90-нан немесе диастолалық қысым 60-тан төмен болса, кей адамдар үшін төмен көрсеткіш болуы мүмкін. Бас айналу, әлсіздік немесе төмен мәндер қайталанса, дәрігермен талқылаңыз. Естен тансаңыз немесе жағдай күрт нашарласа, шұғыл көмекке жүгініңіз.',
+ other:'Бір өлшем диагноз қоюға немесе жағдайдың қауіпсіз екенін анықтауға жеткіліксіз. Өлшемдерді дәрігеріңіз белгілеген жеке мақсатты аралықпен салыстырыңыз және келісілген жоспар бойынша тіркеуді жалғастырыңыз.',
+ technique:'Алдымен 5 минут тыныш отырыңыз. Өлшеуден 30 минут бұрын темекі шекпеңіз, кофеин ішпеңіз және дене жүктемесінен аулақ болыңыз. Арқаңызды тіреңіз, табаныңызды еденге қойыңыз, қолыңызды жүрек деңгейінде ұстаңыз. Сәйкес өлшемдегі манжетті жалаңаш иыққа тағыңыз. 1 минут аралатып екі рет өлшеп, екеуін де сақтаңыз.',
+ doctor:'Дәрігерден мақсатты қысым аралығы, өлшеу кестесі және қандай мәндер не белгілер кезінде хабарласу керегін сұраңыз. Тонометр мен манжеттің жарамдылығын нақтылаңыз. Өлшем тарихын және ішіп жүрген дәрілер тізімін алыңыз. Дерек жүктелгеннен кейін дәрігер оны бірден көрмеуі мүмкін.',
+ summary:'Орташа мән соңғы 14 күндегі сақталған өлшемдерден есептеледі. Тұрақсыз өлшеу нәтижеге әсер етуі мүмкін. Бұл мән диагноз қоюға немесе жағдайдың жақсарғанын не нашарлағанын анықтауға жеткіліксіз.',
+ fallback:'Осы тақырыптардың бірін таңдаңыз: соңғы көрсеткіштер, 14 күндік қорытынды, өлшеу тәртібі немесе дәрігерге қоятын сұрақтар.',
+ medication:'Көмекші дәрі таңдамайды және оның мөлшерін өзгертуді ұсынбайды. Емді дәрігермен талқылаңыз. Қауіпті белгілер болса, шұғыл көмекке жүгініңіз.'
+ }
 };
 export function buildGuidance(data,input={},now=Date.now()){
- const language=input.language==='en'?'en':'ru',w=words[language];
+ const language=Object.hasOwn(words,input.language)?input.language:'ru',w=words[language];
  const rows=data.readings.filter(r=>Number.isFinite(Date.parse(r.measured_at))&&Date.parse(r.measured_at)<=now).slice().sort((a,b)=>Date.parse(b.measured_at)-Date.parse(a.measured_at)||b.id-a.id);
  const latest=rows[0]||null,recent=rows.filter(r=>Date.parse(r.measured_at)>=now-14*86400000);
  const snapshot={latest:latest?{systolic:latest.systolic,diastolic:latest.diastolic,pulse:latest.pulse,measured_at:latest.measured_at}:null,count14:recent.length,days14:new Set(recent.map(r=>r.measured_at.slice(0,10))).size,average:recent.length?{systolic:Math.round(recent.reduce((s,r)=>s+r.systolic,0)/recent.length),diastolic:Math.round(recent.reduce((s,r)=>s+r.diastolic,0)/recent.length)}:null};
  let topic=input.topic||'latest',q=String(input.question||'').toLowerCase();
- if(q){topic=/лекар|таблет|доз|medicat|dose|pill/.test(q)?'medication':/средн|динамик|summary|average|trend/.test(q)?'summary':/измер|measure|cuff/.test(q)?'technique':/врач|doctor|clinician/.test(q)?'doctor':'fallback';}
+ if(q){topic=/лекар|таблет|доз|medicat|dose|pill|дәрі(?!гер)|мөлшер/.test(q)?'medication':/средн|динамик|summary|average|trend|орташа|қорытынды/.test(q)?'summary':/измер|measure|cuff|өлше|манжет/.test(q)?'technique':/врач|doctor|clinician|дәрігер/.test(q)?'doctor':'fallback';}
  const stale=!!latest&&now-Date.parse(latest.measured_at)>86400000,severe=!!latest&&(latest.systolic>=180||latest.diastolic>=120);
  const sections=[];let urgency='routine';
  if(input.warningSymptoms===true){urgency='emergency';sections.push(w.emergency);}

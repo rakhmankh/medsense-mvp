@@ -85,6 +85,12 @@ test('local assistant enforces authentication and existing patient ownership',as
  assert.equal((await req('/api/assistant',{method:'POST',cookie:patientCookie,body:{...body,question:'x'.repeat(401)}})).status,400);
  assert.equal((await req('/assistant-service.mjs')).status,404);
  assert.equal((await req('/assistant.css')).status,200);
+ const kazakh=await req('/api/assistant',{method:'POST',cookie:patientCookie,body:{...body,language:'kk',warningSymptoms:true}});
+ assert.equal(kazakh.status,200);
+ assert.equal(kazakh.body.language,'kk');
+ assert.equal(kazakh.body.urgency,'emergency');
+ assert.match(kazakh.body.sections[0],/Қазақстанда 103 немесе 112/);
+ assert.equal((await req('/kk.js')).status,200);
 });
 test('reading persists and appears to the assigned clinician; CSV escapes formula injection',async()=>{
  const r=await req('/api/readings',{method:'POST',cookie:patientCookie,body:reading({note:'=HYPERLINK("test")'})});assert.equal(r.status,201);savedId=r.body.id;

@@ -20,9 +20,10 @@ test('delivery targets the assigned clinician and current origin, logout unbinds
  let origin='https://one.test';const sent=[];
  const push=createPushService(db,dir,()=>origin,{transport:{sendNotification:async(sub,payload,options)=>{sent.push({endpoint:sub.endpoint,payload:JSON.parse(payload),subject:options.vapidDetails.subject});}}});
  const req={headers:{cookie:'medsense_session=test-session'}};
- push.save({id:1},req,subscription('doctor1'),'ru');push.save({id:2},req,subscription('doctor2'),'en');
+ push.save({id:1},req,subscription('doctor1'),'kk');push.save({id:2},req,subscription('doctor2'),'en');
  await push.notifyReading({id:3,doctor_id:1,name:'Рахман'},{id:12,systolic:128,diastolic:82,pulse:72});
  assert.equal(sent.length,1);assert.match(sent[0].endpoint,/doctor1/);assert.match(sent[0].payload.body,/Рахман.*128\/82.*72/);
+ assert.match(sent[0].payload.title,/Жаңа өлшем/);
  assert.equal(sent[0].subject,'https://one.test');
  origin='https://two.test';assert.equal((await push.deliver(1,{})).devices,0);
  origin='https://one.test';push.logout({id:1},req);assert.equal((await push.deliver(1,{})).devices,0);assert.equal((await push.deliver(2,{})).devices,1);

@@ -169,6 +169,7 @@ const server=http.createServer(async(req,res)=>{
   if (!url.pathname.startsWith('/api/')) {
    const paths={'/':'index.html','/app.js':'app.js','/style.css':'style.css','/ios.css':'ios.css','/sw.js':'sw.js','/manifest.webmanifest':'manifest.webmanifest','/icon.svg':'icon.svg','/icon-192.png':'icon-192.png','/icon-512.png':'icon-512.png'};
    paths['/assistant.css']='assistant.css';
+   paths['/kk.js']='kk.js';
    const file=paths[url.pathname];
    if (!file || req.method!=='GET') return send(404,{error:'Not found'});
    const type=file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':file.endsWith('.webmanifest')?'application/manifest+json':file.endsWith('.svg')?'image/svg+xml':file.endsWith('.png')?'image/png':'text/html';
@@ -217,7 +218,7 @@ const server=http.createServer(async(req,res)=>{
   if (url.pathname==='/api/me' && req.method==='GET') return send(200,publicUser(user));
   if(url.pathname==='/api/assistant' && req.method==='POST'){
    const b=await readJson(req);
-   if(!['ru','en'].includes(b.language)||!['latest','summary','technique','doctor'].includes(b.topic)||
+   if(!['ru','en','kk'].includes(b.language)||!['latest','summary','technique','doctor'].includes(b.topic)||
     (b.question!==undefined&&(typeof b.question!=='string'||b.question.length>400))||
     typeof b.warningSymptoms!=='boolean'||typeof b.specialPopulation!=='boolean')fail(400,'Invalid assistant request');
    let p=user;
@@ -243,7 +244,7 @@ const server=http.createServer(async(req,res)=>{
     const body=await readJson(req);if(typeof body.endpoint!=='string')fail(400,'Invalid endpoint');push.remove(user.id,body.endpoint);return send(200,{ok:true});
    }
    if(url.pathname==='/api/push/test'&&req.method==='POST'){
-    const result=await push.deliver(user.id,{title:'MedSense',body:'Тестовое уведомление / Test notification',tag:'medsense-test'});return send(200,result);
+    const result=await push.deliver(user.id,language=>({title:'MedSense',body:language==='kk'?'Сынақ хабарландыруы':'Тестовое уведомление / Test notification',tag:'medsense-test'}));return send(200,result);
    }
   }
   if (url.pathname==='/api/logout' && req.method==='POST') {
