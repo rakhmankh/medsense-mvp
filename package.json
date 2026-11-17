@@ -1,0 +1,19 @@
+{
+  "name": "medsense-mvp",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Local MedSense patient and clinician workflow MVP",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test tests/api.test.mjs tests/public.test.mjs tests/push.test.mjs tests/patient-components.test.mjs tests/assistant.test.mjs",
+    "prepare:beta": "node tools/share-beta.mjs --prepare-only",
+    "share:beta": "node tools/share-beta.mjs"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "dependencies": {
+    "web-push": "^3.6.7"
+  }
+}
